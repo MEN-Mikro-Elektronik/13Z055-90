@@ -3,8 +3,8 @@
  *        \file  z055_hdlc.h
  *
  *      \author  Christian.Schuster@men.de
- *        $Date: 2005/02/15 14:36:30 $
- *    $Revision: 2.1 $
+ *        $Date: 2010/12/22 15:55:55 $
+ *    $Revision: 2.2 $
  *
  *       \brief  Header file for Z055_HDLC linux driver
  *               containing driver specific IOCTL codes,
@@ -13,11 +13,16 @@
  *
  *    \switches  none
  *
- * $Id: z055_hdlc.h,v 2.1 2005/02/15 14:36:30 cs Exp $
+ * $Id: z055_hdlc.h,v 2.2 2010/12/22 15:55:55 cs Exp $
  */
  /*-------------------------------[ History ]--------------------------------
  *
  * $Log: z055_hdlc.h,v $
+ * Revision 2.2  2010/12/22 15:55:55  cs
+ * R: 1. New IP core revisions support NRZ-S coding and half duplex
+ * M: 1a. Defines for setting NRZI (NRZ-S) coding added
+ *    1b. Defines for setting half/full duplex added
+ *
  * Revision 2.1  2005/02/15 14:36:30  cs
  * Initial Revision
  *
@@ -61,6 +66,7 @@
 #define HDLC_ENCODING_NRZI				1
 #define HDLC_ENCODING_MANCHESTER		2
 #define HDLC_ENCODING_MANCHESTER_NRZI	3
+#define HDLC_ENCODING_NRZI_S	        4
 
 //#define HDLC_PREAMBLE_LENGTH_8BITS	0
 //#define HDLC_PREAMBLE_LENGTH_16BITS	1
@@ -77,6 +83,9 @@
 #define Z055_MODE_HDLC		2
 
 #define Z055_BUS_TYPE_PCI	1
+
+#define HDLC_FULL_DUPLEX	0
+#define HDLC_HALF_DUPLEX	1
 
 typedef struct _Z055_PARAMS
 {
@@ -98,6 +107,7 @@ typedef struct _Z055_PARAMS
 								 * preset, return error frame */
 	unsigned char	preamble;	/* number of preambles to send */
 								/* preamble currently not supported */
+	unsigned char	half_duplex;    /* If 1, set half duplex; 0 set full duplex */
 
 } Z055_PARAMS, *PZ055_PARAMS;
 
@@ -190,3 +200,4 @@ struct Z055_ICOUNT {
 #define Z055_IOCWAITEVENT	_IOWR(Z055_MAGIC_IOC,8,int)
 
 #endif /* _Z55_DRV_H_ */
+
