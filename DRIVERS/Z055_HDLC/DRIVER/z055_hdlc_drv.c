@@ -1914,7 +1914,11 @@ static long z055_compat_ioctl(struct tty_struct *tty,
  *
  * Return Value:        None
  */
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(6,1,0)
+static void z055_set_termios(struct tty_struct *tty, const struct ktermios *old_termios)
+#else
 static void z055_set_termios(struct tty_struct *tty, struct ktermios *old_termios)
+#endif
 {
 	struct Z055_STRUCT *info    = (struct Z055_STRUCT *)tty->driver_data;
 	unsigned long flags;
@@ -2905,7 +2909,6 @@ static int __init z055_hdlc_init(void)
 
 static void __exit z055_hdlc_exit(void)
 {
-	int rc;
 	struct Z055_STRUCT *info;
 	struct Z055_STRUCT *tmp;
 
