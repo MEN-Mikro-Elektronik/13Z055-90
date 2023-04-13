@@ -2835,9 +2835,9 @@ int z055_init_tty()
 	if ( debug_level & DEBUG_LEVEL_INFO )
 		printk( "%s(%d)\n", __FUNCTION__, __LINE__   );
 
-	G_serial_driver = tty_alloc_driver(G_z055_device_count, 0);
-	if (!G_serial_driver)
-		return -ENOMEM;
+	G_serial_driver = tty_alloc_driver(G_z055_device_count, TTY_DRIVER_REAL_RAW);
+	if (IS_ERR(G_serial_driver))
+		return PTR_ERR(G_serial_driver);
 	G_serial_driver->owner = THIS_MODULE;
 
 	G_serial_driver->driver_name = "men_lx_z055";
@@ -2850,7 +2850,6 @@ int z055_init_tty()
 	G_serial_driver->init_termios.c_cflag = B9600 | CS8 | CREAD | HUPCL | CLOCAL;
 	G_serial_driver->init_termios.c_ispeed = 9600;
 	G_serial_driver->init_termios.c_ospeed = 9600;
-	G_serial_driver->flags = TTY_DRIVER_REAL_RAW;
 	tty_set_operations(G_serial_driver, &ops);
 	if (tty_register_driver(G_serial_driver) < 0)
 		printk( "%s(%d): Couldn't register serial driver\n",
