@@ -1914,7 +1914,11 @@ static long z055_compat_ioctl(struct tty_struct *tty,
  *
  * Return Value:        None
  */
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(6,1,0)
+static void z055_set_termios(struct tty_struct *tty, const struct ktermios *old_termios)
+#else
 static void z055_set_termios(struct tty_struct *tty, struct ktermios *old_termios)
+#endif
 {
 	struct Z055_STRUCT *info    = (struct Z055_STRUCT *)tty->driver_data;
 	unsigned long flags;
@@ -2831,9 +2835,9 @@ int z055_init_tty()
 	if ( debug_level & DEBUG_LEVEL_INFO )
 		printk( "%s(%d)\n", __FUNCTION__, __LINE__   );
 
-	G_serial_driver = tty_alloc_driver(G_z055_device_count, 0);
-	if (!G_serial_driver)
-		return -ENOMEM;
+	G_serial_driver = tty_alloc_driver(G_z055_device_count, TTY_DRIVER_REAL_RAW);
+	if (IS_ERR(G_serial_driver))
+		return PTR_ERR(G_serial_driver);
 	G_serial_driver->owner = THIS_MODULE;
 
 	G_serial_driver->driver_name = "men_lx_z055";
@@ -2846,7 +2850,6 @@ int z055_init_tty()
 	G_serial_driver->init_termios.c_cflag = B9600 | CS8 | CREAD | HUPCL | CLOCAL;
 	G_serial_driver->init_termios.c_ispeed = 9600;
 	G_serial_driver->init_termios.c_ospeed = 9600;
-	G_serial_driver->flags = TTY_DRIVER_REAL_RAW;
 	tty_set_operations(G_serial_driver, &ops);
 	if (tty_register_driver(G_serial_driver) < 0)
 		printk( "%s(%d): Couldn't register serial driver\n",
@@ -2905,7 +2908,6 @@ static int __init z055_hdlc_init(void)
 
 static void __exit z055_hdlc_exit(void)
 {
-	int rc;
 	struct Z055_STRUCT *info;
 	struct Z055_STRUCT *tmp;
 
@@ -2916,13 +2918,7 @@ static void __exit z055_hdlc_exit(void)
 			__FUNCTION__, __LINE__,
 			G_serial_driver->driver_name, G_serial_driver->name);
 
-#if LINUX_VERSION_CODE < KERNEL_VERSION(5,14,0)
-	if ((rc = tty_unregister_driver(G_serial_driver)))
-		printk( "%s(%d): failed to unregister tty driver err=%d\n",
-				__FUNCTION__, __LINE__, rc);
-#else
 	tty_unregister_driver(G_serial_driver);
-#endif
 
 	printk("%s(%d)\n", __FUNCTION__, __LINE__);
 	tty_driver_kref_put(G_serial_driver);
@@ -2973,7 +2969,7 @@ static void z055_hw_set_sdlc_mode( struct Z055_STRUCT *info )
 	case HDLC_ENCODING_NRZI:            RegValue = Z055_CDR_NRZI;       break;
 	case HDLC_ENCODING_MANCHESTER:      RegValue = Z055_CDR_MAN;        break;
 	case HDLC_ENCODING_MANCHESTER_NRZI: RegValue = Z055_CDR_NRZI_MAN;   break;
-	case HDLC_ENCODING_NRZI_S:          RegValue = Z055_CDR_NRZS;       break;
+	case HDLC_ENCODING_NRZ_S:           RegValue = Z055_CDR_NRZS;       break;
 	default:                            RegValue = Z055_CDR_NRZ;        break;
 	}
 	Z055_OUTREG( info, Z055_CDR, RegValue );

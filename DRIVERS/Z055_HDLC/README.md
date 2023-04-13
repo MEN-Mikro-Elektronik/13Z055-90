@@ -7,7 +7,6 @@ the Linux operating system. The information is organized into the follow section
 
 Software Map
 Building the Z055 Drivers
-Building the Utilities
 Device Driver Overview
 Loading and Unloading the Driver
    Z055 HDLC Adapter Driver Load Options
@@ -20,12 +19,19 @@ z055_hdlc_util Configuration Utility
 
 More information is available in the following files:
 
-README.PPP            Setting up a PPP network connection (using pppd program)
+PPP.md            Setting up a PPP network connection (using pppd program)
 
 
 ********************
 *** Applications ***
 ********************
+
+This driver is intended for use in synchronous HDLC mode.
+All packages written to the tty device that this z055_hdlc_drv
+driver creates should contain the address and control bytes at
+the begining of the frame and then the data payload. The checksum
+and start/end flags will be added afterwards when transmiting the
+complete frame.
 
 * Synchronous PPP connections
 
@@ -45,7 +51,7 @@ Synchronous PPP
    software in synchronous HDLC modes.
 
    For more information on using the Z055 HDLC adapter for PPP read the
-   README.PPP file supplied with the Z055 HDLC software.
+   PPP.md file supplied with the Z055 HDLC software.
 
 ********************
 *** Software Map ***
@@ -74,74 +80,8 @@ Public License (GPL).
 *** Building the Z055 HDLC  Drivers ***
 ***************************************
 
-Building the Z055 HDLC drivers requires the Linux kernel source,
-usually located in the directory /usr/src/linux. The kernel source
-is available on most Linux distributions and from ftp.kernel.org.
-
-The kernel source must have an existing configuration, located
-in the file /usr/src/linux/.config and must have build dependencies
-located in files named .depend located throughout the kernel source.
-If the configuration file is missing, a configuration can be
-generated using the 'make menuconfig' command in the kernel
-source directory. The dependency files are created, after generating
-a configuration file, using the 'make dep' command in the kernel
-source directory. Refer to the kernel documentation for more details.
-
-
-    Note on Driver and Kernel Versions
-    ----------------------------------
-
-    currently only Kernel version 2.4.xx is supported
-
-The Z055 HDLC drivers can be built using 2 methods:
-
-1. in the MDIS driver directory, outside of the kernel source tree,
-   using the MDIS build environment (ELinOS) and the driver.mak file supplied.
-2. with standard kernel build procedures in the kernel source tree.
-
-
-Building Drivers Outside of the Kernel Source Tree
---------------------------------------------------
-
-This is the easiest method of building the Z055 HDLC drivers,
-and works even if the drivers are not part of the kernel source.
-This method *only* builds the drivers as modules. Building
-drivers into the kernel requires building inside of the
-kernel source tree as described in the next section.
-
-In the $(ELINOS_PROJECT)/src/mdis directory add the driver.mak file
-to the key ALL_NATIVE_DRIVERS
-(e.g. ALL_NATIVE_DRIVERS = DRIVERS/Z055_HDLC/driver.mak)
-
-then build / compile the project from the $(ELINOS_PROJECT) directory type
-# make boot
-
-This builds the men_z055_hdlc driver for use with
-the kernel located in the $(ELINOS_PROJECT)/linux directory, copies the
-binaries to the lib/modules/x.y.z directory and runs the depmod program
-to calculate module dependencies.
-
-After installation, the drivers should be ready for use.
-
-
-Building Drivers Inside of the Kernel Source Tree
--------------------------------------------------
-
-/* to be done */
-
-******************************
-*** Building the Utilities ***
-******************************
-
-The programs can be built in the Z055_HDLC
-distribution directory by performing the following steps
-
-In the $(ELINOS_PROJECT)/src/mdis directory add the driver.mak file
-to the key ALL_NATIVE_TOOLS
-(e.g. ALL_NATIVE_TOOLS = DRIVERS/Z055_HDLC/Z055_HDLC_UTIL/program.mak)
-
-then build / compile the project from the $(ELINOS_PROJECT) directory type
-# make boot
+These Z055 HDLC drivers and tools shall be built inside an MDIS
+project from the parent component 13MD05-90.
 
 
 ******************************

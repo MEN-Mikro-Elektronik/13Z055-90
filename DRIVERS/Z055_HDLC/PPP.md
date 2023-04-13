@@ -26,46 +26,6 @@ PPP connection. PPP options are set by using command line arguments to the
 pppd program.
 
 
-------------------------
-Getting the PPP Software
-------------------------
-
-
-Version 2.3.7 or later of the ppp package is required for synchronous PPP.
-Most Linux distributions include the pppd package. One version is also
-available from:
-
-ftp://cs.anu.edu.au/pub/software/ppp/
-
-If your Linux distribution already includes the pppd package, there
-should be no need to download, build, and install the pppd package
-again. You can run "pppd --version" as root to see if the pppd binary
-is installed and verify the version number meets the requirements.
-
-
----------------------------
-Building and Installing PPP
----------------------------
-
-If you download the pppd package, following these steps to build
-and install the pppd package.
-
-Step 1. Decompress and dearchive source files with:
-        #tar xzvf ppp-2.4.0.tar.gz
-
-Step 2. Build and install PPP package with:
-        #cd ppp-2.4.0           (move to source directory)
-        #./configure            (configure Makefile)
-        #make kernel            (copy kernel source files to kernel source directory)
-        #make                   (build the chat and pppd user mode programs)
-        #make install           (install built binaries and man pages)
-
-Step 3. Configure Kernel to build ppp line discipline driver:
-        Use 'make xconfig' or 'make menuconfig' to configure kernel.
-        Enable PPP in the network device configuration section.
-        Rebuild the kernel with
-        'make dep;make clean;make bzImage;make modules;make modules_install'
-
 ---------
 Using PPP
 ---------
@@ -102,12 +62,9 @@ deactivates the connection.
        "ifconfig ppp0 txqueuelen 36"
 
 
---------------------------
-PPP for Linux Kernel 2.4.x
---------------------------
-
-The PPP driver for kernel 2.4.x has changed, requiring pppd 2.3.11 or
-later, and the following changes to the system setup:
+--------------------
+PPP for Linux Kernel
+--------------------
 
 The device file /dev/ppp must exist. This file is created automatically by
 the latest version of pppd, or can be created manually with the command
