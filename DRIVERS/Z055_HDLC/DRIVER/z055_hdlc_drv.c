@@ -95,11 +95,7 @@
 #define PUT_USER(error,value,addr) error = put_user(value,addr)
 #define COPY_TO_USER(error,dest,src,size) error = copy_to_user(dest,src,size) ? -EFAULT : 0
 
-#if LINUX_VERSION_CODE < VERSION(4,10,0)
-#include <asm/uaccess.h>
-#else
 #include <linux/uaccess.h>
-#endif
 
 #include <generated/autoconf.h>
 
